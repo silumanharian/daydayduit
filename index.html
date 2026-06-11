@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <script>
+if(sessionStorage.getItem("login") !== "true"){
+    window.location.href = "login.html";
+}
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TABUNGAN - USD IDR LKR</title>
+<link rel="shortcut icon" type="image/png" href="https://i.postimg.cc/fTmvxL5n/fc.png" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{
+    background:
+    radial-gradient(circle at top left,#4f46e5 0%,transparent 30%),
+    radial-gradient(circle at top right,#06b6d4 0%,transparent 25%),
+    linear-gradient(135deg,#0f172a,#1e293b);
+    min-height:100vh;
+    font-family:'Inter','Segoe UI',sans-serif;
+    color:#fff;
+}
+
+.container{
+    max-width:1400px;
+}
+
+h2{
+    font-weight:800;
+    color:#fff;
+    letter-spacing:.5px;
+}
+
+.text-muted{
+    color:#cbd5e1 !important;
+}
+
+.card{
+    border:none;
+    border-radius:24px;
+    backdrop-filter:blur(18px);
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.1);
+    box-shadow:
+    0 8px 32px rgba(0,0,0,.25);
+    color:#fff;
+}
+
+.currency-card{
+    text-align:center;
+    padding:25px;
+    border-radius:20px;
+    background:rgba(255,255,255,.08);
+    transition:.3s;
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.currency-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 15px 35px rgba(0,0,0,.25);
+}
+
+.currency-card h5{
+    color:#94a3b8;
+    font-size:14px;
+    margin-bottom:10px;
+}
+
+.currency-card div{
+    font-size:30px;
+    font-weight:800;
+    color:#fff;
+}
+
+.summary-box{
+    padding:20px;
+    border-radius:18px;
+    text-align:center;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.summary-box span{
+    display:block;
+    font-size:30px;
+    margin-top:10px;
+    font-weight:800;
+}
+
+#saldoUSD,
+#grandUSD{
+    color:#22c55e;
+}
+
+#saldoIDR,
+#grandIDR{
+    color:#3b82f6;
+}
+
+#saldoLKR,
+#grandLKR{
+    color:#f59e0b;
+}
+
+.form-control,
+.form-select{
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.08);
+    color:#fff;
+    min-height:50px;
+}
+
+.form-control::placeholder{
+    color:#94a3b8;
+}
+
+.form-control:focus,
+.form-select:focus{
+    background:rgba(255,255,255,.12);
+    color:#fff;
+    border-color:#3b82f6;
+    box-shadow:0 0 0 4px rgba(59,130,246,.2);
+}
+
+.form-select option{
+    color:#000;
+}
+
+.table{
+    color:#fff;
+    margin-bottom:0;
+}
+
+.table thead{
+    background:rgba(255,255,255,.08);
+}
+
+.table thead th{
+    border:none;
+    color:#fff;
+}
+
+.table td{
+    border-color:rgba(255,255,255,.08);
+    vertical-align:middle;
+}
+
+.btn-primary{
+    background:linear-gradient(135deg,#3b82f6,#2563eb);
+    border:none;
+    border-radius:14px;
+    padding:10px 20px;
+    font-weight:600;
+}
+
+.btn-success{
+    background:linear-gradient(135deg,#22c55e,#16a34a);
+    border:none;
+    border-radius:14px;
+}
+
+.btn-danger{
+    background:linear-gradient(135deg,#ef4444,#dc2626);
+    border:none;
+    border-radius:14px;
+}
+
+.btn-warning{
+    border-radius:12px;
+}
+
+canvas{
+    border-radius:18px;
+}
+
+.card h4{
+    font-weight:700;
+    margin-bottom:20px;
+}
+
+#lastUpdate{
+    color:#38bdf8;
+    font-weight:600;
+}
+
+::-webkit-scrollbar{
+    width:8px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#475569;
+    border-radius:10px;
+}
+
+@media (max-width: 768px){
+
+.table thead{
+    display:none;
+}
+
+.table,
+.table tbody,
+.table tr,
+.table td{
+    display:block;
+    width:100%;
+}
+
+.table tr{
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:18px;
+    margin-bottom:15px;
+    padding:10px;
+}
+
+.table td{
+    border:none;
+    padding:8px 10px;
+    text-align:right;
+    position:relative;
+    padding-left:45%;
+}
+
+.table td:before{
+    position:absolute;
+    left:10px;
+    width:40%;
+    text-align:left;
+    font-weight:700;
+    color:#94a3b8;
+}
+
+.table td:nth-child(1):before{
+    content:"Tanggal";
+}
+
+.table td:nth-child(2):before{
+    content:"Deskripsi";
+}
+
+.table td:nth-child(3):before{
+    content:"Tipe";
+}
+
+.table td:nth-child(4):before{
+    content:"Jumlah";
+}
+
+.table td:nth-child(5):before{
+    content:"Mata Uang";
+}
+
+.table td:nth-child(6):before{
+    content:"Aksi";
+}
+
+.table td:last-child{
+    text-align:center;
+    padding-left:10px;
+}
+
+.table td:last-child button{
+    margin:3px;
+}
+
+}
+@media(max-width:768px){
+
+.btn-warning,
+.btn-danger{
+    width:48%;
+}
+
+}
+</style>
+</head>
+<body>
+<div class="container py-4">
+<h2>Finance Dashboard</h2>
+<button onclick="logout()" class="btn btn-danger">
+Logout
+</button>
+<p class="text-muted">
+USD • IDR • LKR
+</p>
+<div class="text-muted small mb-3">Update terakhir: <span id="lastUpdate">-</span></div>
+
+<div class="row mb-4">
+<div class="col-md-4 mb-3"><div class="currency-card"><h5>💵 USD → IDR</h5><div id="usdIdr">Loading...</div></div></div>
+<div class="col-md-4 mb-3"><div class="currency-card"><h5>💵 USD → LKR</h5><div id="usdLkr">Loading...</div></div></div>
+<div class="col-md-4 mb-3"><div class="currency-card"><h5>🔄 IDR → LKR</h5><div id="idrLkr">Loading...</div></div></div>
+</div>
+
+<button class="btn btn-success btn-sm mb-4" onclick="loadRates()">Refresh Kurs Sekarang</button>
+
+<div class="card p-4 mb-4">
+<h4>Input Transaksi</h4>
+<input type="hidden" id="editId">
+<div class="row">
+<div class="col-md-2 mb-3"><label>Tanggal</label><input type="date" id="tanggal" class="form-control"></div>
+<div class="col-md-3 mb-3"><label>Deskripsi</label><input type="text" id="deskripsi" class="form-control"></div>
+<div class="col-md-2 mb-3"><label>Jumlah</label><input type="number" id="jumlah" class="form-control"></div>
+<div class="col-md-2 mb-3"><label>Tipe</label><select id="tipe" class="form-select"><option value="MASUK">MASUK</option><option value="KELUAR">KELUAR</option></select></div>
+<div class="col-md-3 mb-3"><label>Mata Uang</label><select id="mataUang" class="form-select"><option>USD</option><option>IDR</option><option>LKR</option></select></div>
+</div>
+<button class="btn btn-primary" onclick="saveTransaction()">Simpan</button>
+</div>
+
+<div class="card p-4 mb-4">
+<h4>Ringkasan Saldo</h4>
+<div class="row">
+<div class="col-md-4"><div class="summary-box">USD: <span id="saldoUSD">$ 0</span></div></div>
+<div class="col-md-4"><div class="summary-box">IDR: <span id="saldoIDR">Rp 0</span></div></div>
+<div class="col-md-4"><div class="summary-box">LKR: <span id="saldoLKR">Rs 0</span></div></div>
+</div>
+</div>
+
+<div class="card p-4 mb-4">
+<h4>Total Semua Mata Uang (Konversi)</h4>
+<div class="row">
+<div class="col-md-4"><div class="summary-box">USD: <span id="grandUSD">$ 0</span></div></div>
+<div class="col-md-4"><div class="summary-box">IDR: <span id="grandIDR">Rp 0</span></div></div>
+<div class="col-md-4"><div class="summary-box">LKR: <span id="grandLKR">Rs 0</span></div></div>
+</div>
+</div>
+
+<div class="card p-4">
+<div class="row mb-3">
+
+    <div class="col-md-6">
+
+        <input
+            type="text"
+            id="searchInput"
+            class="form-control"
+            placeholder="Cari tanggal, deskripsi, tipe, atau mata uang..."
+            onkeyup="renderTable()">
+
+    </div>
+
+</div>
+
+<h4>Daftar Transaksi</h4>
+    
+<div class="table-responsive">
+<table class="table table-bordered">
+<thead><tr><th>Tanggal</th><th>Deskripsi</th><th>Tipe</th><th>Jumlah</th><th>Mata Uang</th><th>Aksi</th></tr></thead>
+<tbody id="tableBody"></tbody>
+</table>
+ </div>
+<button class="btn btn-danger mb-3" onclick="exportPDF()">
+    Export PDF
+</button>
+<br/>
+</div>
+<div class="card p-3 mb-4">
+
+    <div class="d-flex justify-content-between align-items-center">
+
+        <h6 class="mb-0">
+            📊 KELUAR MASUK
+        </h6>
+
+    </div>
+
+    <div style="height:220px">
+
+        <canvas id="incomeExpenseChart"></canvas>
+
+    </div>
+
+</div>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const db = window.supabase.createClient(
+  "https://gzjfhtmtunxjcpawoaft.supabase.co",
+  "sb_publishable_qfKiFBmjU4VuC4wbd_j7sg_tRUY_9nT"
+);
+console.log("DB READY", db);
+let transactions = [];
+let usdIdrRate = 0;
+let usdLkrRate = 0;
+let idrLkrRate = 0;
+let chartInstance = null;
+
+async function loadTransactions() {
+  const { data, error } = await db
+    .from("transactions")
+    .select("*")
+    .order("id", { ascending: false });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  transactions = data || [];
+
+  renderTable();
+  updateSummary();
+  updateGrandTotal();
+  updateChart();
+}
+
+async function saveTransaction() {
+  const editId = document.getElementById("editId").value;
+
+  const payload = {
+    tanggal: document.getElementById("tanggal").value,
+    deskripsi: document.getElementById("deskripsi").value,
+    jumlah: Number(document.getElementById("jumlah").value),
+    tipe: document.getElementById("tipe").value,
+    mata_uang: document.getElementById("mataUang").value
+  };
+
+  let result;
+
+  if (editId) {
+    result = await db
+      .from("transactions")
+      .update(payload)
+      .eq("id", editId);
+  } else {
+    result = await db
+      .from("transactions")
+      .insert([payload]);
+  }
+
+  if (result.error) {
+    alert(result.error.message);
+    return;
+  }
+
+  clearForm();
+  loadTransactions();
+}
+
+function clearForm() {
+  document.getElementById("editId").value = "";
+  document.getElementById("tanggal").value = "";
+  document.getElementById("deskripsi").value = "";
+  document.getElementById("jumlah").value = "";
+}
+
+function editTransaction(id) {
+  const item = transactions.find(x => x.id == id);
+  if (!item) return;
+
+  document.getElementById("editId").value = item.id;
+  document.getElementById("tanggal").value = item.tanggal || "";
+  document.getElementById("deskripsi").value = item.deskripsi || "";
+  document.getElementById("jumlah").value = item.jumlah || "";
+  document.getElementById("tipe").value = item.tipe || "MASUK";
+  document.getElementById("mataUang").value = item.mata_uang || "USD";
+}
+
+async function deleteTransaction(id) {
+  if (!confirm("Hapus transaksi?")) return;
+
+  const { error } = await db
+    .from("transactions")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  loadTransactions();
+}
+
+function renderTable() {
+  const keyword = (
+    document.getElementById("searchInput")?.value || ""
+  ).toLowerCase();
+
+  const tbody = document.getElementById("tableBody");
+  tbody.innerHTML = "";
+
+  transactions
+    .filter(item =>
+      JSON.stringify(item).toLowerCase().includes(keyword)
+    )
+    .forEach(item => {
+      tbody.innerHTML += `
+      <tr>
+        <td>${item.tanggal || ""}</td>
+        <td>${item.deskripsi || ""}</td>
+        <td>${item.tipe}</td>
+        <td>${Number(item.jumlah || 0).toLocaleString()}</td>
+        <td>${item.mata_uang || ""}</td>
+        <td>
+          <button class="btn btn-warning btn-sm"
+            onclick="editTransaction(${item.id})">
+            Edit
+          </button>
+
+          <button class="btn btn-danger btn-sm"
+            onclick="deleteTransaction(${item.id})">
+            Hapus
+          </button>
+        </td>
+      </tr>`;
+    });
+}
+
+function updateSummary() {
+  let usd = 0;
+  let idr = 0;
+  let lkr = 0;
+
+  transactions.forEach(t => {
+    const value =
+      t.tipe === "MASUK"
+        ? Number(t.jumlah)
+        : -Number(t.jumlah);
+
+    if (t.mata_uang === "USD") usd += value;
+    if (t.mata_uang === "IDR") idr += value;
+    if (t.mata_uang === "LKR") lkr += value;
+  });
+
+  document.getElementById("saldoUSD").innerText =
+    "$ " + usd.toLocaleString();
+
+  document.getElementById("saldoIDR").innerText =
+    "Rp " + idr.toLocaleString();
+
+  document.getElementById("saldoLKR").innerText =
+    "Rs " + lkr.toLocaleString();
+}
+
+function updateGrandTotal() {
+  if (!usdIdrRate || !usdLkrRate) return;
+
+  let totalUSD = 0;
+
+  transactions.forEach(t => {
+    const amount =
+      t.tipe === "MASUK"
+        ? Number(t.jumlah)
+        : -Number(t.jumlah);
+
+    if (t.mata_uang === "USD")
+      totalUSD += amount;
+    else if (t.mata_uang === "IDR")
+      totalUSD += amount / usdIdrRate;
+    else
+      totalUSD += amount / usdLkrRate;
+  });
+
+  document.getElementById("grandUSD").innerText =
+    "$ " + totalUSD.toFixed(2);
+
+  document.getElementById("grandIDR").innerText =
+    "Rp " +
+    Math.round(totalUSD * usdIdrRate).toLocaleString();
+
+  document.getElementById("grandLKR").innerText =
+    "Rs " +
+    Math.round(totalUSD * usdLkrRate).toLocaleString();
+}
+
+async function loadRates() {
+  try {
+    const res = await fetch(
+      "https://open.er-api.com/v6/latest/USD"
+    );
+
+    const data = await res.json();
+
+    usdIdrRate = data.rates.IDR;
+    usdLkrRate = data.rates.LKR;
+    idrLkrRate = usdLkrRate / usdIdrRate;
+
+    document.getElementById("usdIdr").innerText =
+      usdIdrRate.toLocaleString();
+
+    document.getElementById("usdLkr").innerText =
+      usdLkrRate.toLocaleString();
+
+    document.getElementById("idrLkr").innerText =
+      idrLkrRate.toFixed(4);
+
+    document.getElementById("lastUpdate").innerText =
+      new Date().toLocaleString();
+
+    updateGrandTotal();
+    updateChart();
+
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function updateChart() {
+  const canvas =
+    document.getElementById("incomeExpenseChart");
+
+  let income = 0;
+  let expense = 0;
+
+  transactions.forEach(t => {
+    if (t.tipe === "MASUK")
+      income += Number(t.jumlah || 0);
+    else
+      expense += Number(t.jumlah || 0);
+  });
+
+  if (chartInstance) chartInstance.destroy();
+
+  chartInstance = new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels: ["MASUK", "KELUAR"],
+      datasets: [{
+        data: [income, expense]
+      }]
+    }
+  });
+}
+
+async function exportPDF() {
+  const { jsPDF } = window.jspdf;
+
+  const doc = new jsPDF();
+
+  doc.text("Laporan Keuangan", 14, 20);
+
+  doc.autoTable({
+    startY: 30,
+    head: [["Tanggal","Deskripsi","Tipe","Jumlah","Mata Uang"]],
+    body: transactions.map(t => [
+      t.tanggal,
+      t.deskripsi,
+      t.tipe,
+      t.jumlah,
+      t.mata_uang
+    ])
+  });
+
+  doc.save("Laporan-Keuangan.pdf");
+}
+
+loadTransactions()
+  .then(() => console.log("LOAD OK"))
+  .catch(err => console.error("LOAD ERROR", err));
+
+loadRates();
+setInterval(loadRates, 300000);
+
+    function logout(){
+
+    sessionStorage.removeItem("login");
+
+    window.location.href="login.html";
+
+}
+</script>
+    
+</body>
+</html>
