@@ -15,279 +15,502 @@ if(sessionStorage.getItem("login") !== "true"){
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-body{
+	/* ========================================
+	ROOT & BODY
+	======================================== */
+
+	body{
     background:
     radial-gradient(circle at top left,#4f46e5 0%,transparent 30%),
     radial-gradient(circle at top right,#06b6d4 0%,transparent 25%),
     linear-gradient(135deg,#0f172a,#1e293b);
+
     min-height:100vh;
-    font-family:'Inter','Segoe UI',sans-serif;
+    font-family:'Poppins',sans-serif;
     color:#fff;
-}
+	}
 
-.container{
-    max-width:1400px;
-}
+	.container{
+	max-width:1400px;
+	}
 
-h2{
-    font-weight:800;
-    color:#fff;
-    letter-spacing:.5px;
-}
+	h2{
+	font-weight:800;
+	color:#fff;
+	letter-spacing:.5px;
+	}
 
-.text-muted{
-    color:#cbd5e1 !important;
-}
+	.text-muted{
+	color:#cbd5e1 !important;
+	}
 
-.card{
-    border:none;
-    border-radius:24px;
-    backdrop-filter:blur(18px);
-    background:rgba(255,255,255,.08);
+	/* ========================================
+	NAVBAR
+	======================================== */
+
+	.custom-navbar{
+    position: sticky;
+    top: 10px;
+    z-index: 9999;
+
+    background: rgba(15,23,42,.85);
+    backdrop-filter: blur(20px);
+
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 20px;
+
+    margin: 15px;
+	}
+	.custom-navbar{
+    position:sticky;
+    top:10px;
+    z-index:9999;
+
+    background:rgba(15,23,42,.85);
+    backdrop-filter:blur(20px);
+
     border:1px solid rgba(255,255,255,.1);
-    box-shadow:
-    0 8px 32px rgba(0,0,0,.25);
-    color:#fff;
-}
-
-.currency-card{
-    text-align:center;
-    padding:25px;
     border-radius:20px;
-    background:rgba(255,255,255,.08);
-    transition:.3s;
-    border:1px solid rgba(255,255,255,.08);
-}
+    margin:15px;
+	}
 
-.currency-card:hover{
-    transform:translateY(-6px);
-    box-shadow:0 15px 35px rgba(0,0,0,.25);
-}
+	.navbar-toggler{
+		border:none;
+		box-shadow:none !important;
+	}
 
-.currency-card h5{
-    color:#94a3b8;
-    font-size:14px;
-    margin-bottom:10px;
-}
+	.navbar-toggler:focus{
+		box-shadow:none !important;
+	}
 
-.currency-card div{
-    font-size:30px;
-    font-weight:800;
+	@media(max-width:768px){
+
+		.custom-navbar{
+			margin:10px;
+			border-radius:16px;
+		}
+
+		.navbar-brand{
+			font-size:16px;
+		}
+
+		#navbarMenu .btn{
+			width:100%;
+		}
+
+		#navbarMenu{
+			padding-top:15px;
+		}
+	}
+	/* ========================================
+	CARD
+	======================================== */
+
+	.card{
+	color:#fff;
+	border:none;
+	border-radius:24px;
+	backdrop-filter:blur(18px);
+	background:rgba(255,255,255,.08);
+	border:1px solid rgba(255,255,255,.1);
+	box-shadow:0 8px 32px rgba(0,0,0,.25);
+	}
+
+	.card h4{
+	font-weight:700;
+	margin-bottom:20px;
+	}
+
+	/* ========================================
+	CURRENCY CARD
+	======================================== */
+
+	.currency-card{
+	text-align:center;
+	padding:25px;
+	border-radius:20px;
+	background:rgba(255,255,255,.08);
+	border:1px solid rgba(255,255,255,.08);
+	transition:.3s;
+	}
+
+	.currency-card:hover{
+	transform:translateY(-6px);
+	box-shadow:0 15px 35px rgba(0,0,0,.25);
+	}
+
+	.currency-card h5{
+	font-size:14px;
+	margin-bottom:10px;
+	color:#94a3b8;
+	}
+
+	.currency-card div{
+	font-size:30px;
+	font-weight:800;
+	color:#fff;
+	}
+
+	/* ========================================
+	SUMMARY BOX
+	======================================== */
+
+	.summary-box{
+	text-align:center;
+	padding:20px;
+	border-radius:18px;
+	background:rgba(255,255,255,.06);
+	border:1px solid rgba(255,255,255,.08);
+	}
+
+	.summary-box span{
+	display:block;
+	margin-top:10px;
+	font-size:30px;
+	font-weight:800;
+	}
+
+	#saldoUSD,
+	#grandUSD{
+	color:#22c55e;
+	}
+
+	#saldoIDR,
+	#grandIDR{
+	color:#3b82f6;
+	}
+
+	#saldoLKR,
+	#grandLKR{
+	color:#f59e0b;
+	}
+
+	/* ========================================
+	FORM
+	======================================== */
+
+	.form-control,
+	.form-select{
+	min-height:50px;
+	color:#fff;
+	border-radius:14px;
+	border:1px solid rgba(255,255,255,.12);
+	background:rgba(255,255,255,.08);
+	}
+
+	.form-control::placeholder{
+	color:#94a3b8;
+	}
+
+	.form-control:focus,
+	.form-select:focus{
+	color:#fff;
+	background:rgba(255,255,255,.12);
+	border-color:#3b82f6;
+	box-shadow:0 0 0 4px rgba(59,130,246,.2);
+	}
+
+	.form-select option{
+	color:#000;
+	}
+
+	/* ========================================
+	BUTTON
+	======================================== */
+
+	.btn{
+	font-weight:600;
+	transition:.2s;
+	}
+
+	.btn:hover{
+	transform:translateY(-2px);
+	}
+
+	.btn-primary{
+	border:none;
+	border-radius:14px;
+	padding:10px 20px;
+	background:linear-gradient(135deg,#3b82f6,#2563eb);
+	}
+
+	.btn-success{
+	border:none;
+	border-radius:14px;
+	background:linear-gradient(135deg,#22c55e,#16a34a);
+	}
+
+	.btn-danger{
+	border:none;
+	border-radius:14px;
+	background:linear-gradient(135deg,#ef4444,#dc2626);
+	}
+
+	.btn-warning{
+	border:none;
+	color:#fff;
+	border-radius:12px;
+	background:#f59e0b;
+	}
+	.badge-masuk{
+    background:#22c55e;
     color:#fff;
-}
-
-.summary-box{
-    padding:20px;
-    border-radius:18px;
-    text-align:center;
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.08);
-}
-
-.summary-box span{
-    display:block;
-    font-size:30px;
-    margin-top:10px;
-    font-weight:800;
-}
-
-#saldoUSD,
-#grandUSD{
-    color:#22c55e;
-}
-
-#saldoIDR,
-#grandIDR{
-    color:#3b82f6;
-}
-
-#saldoLKR,
-#grandLKR{
-    color:#f59e0b;
-}
-
-.form-control,
-.form-select{
-    border-radius:14px;
-    border:1px solid rgba(255,255,255,.12);
-    background:rgba(255,255,255,.08);
-    color:#fff;
-    min-height:50px;
-}
-
-.form-control::placeholder{
-    color:#94a3b8;
-}
-
-.form-control:focus,
-.form-select:focus{
-    background:rgba(255,255,255,.12);
-    color:#fff;
-    border-color:#3b82f6;
-    box-shadow:0 0 0 4px rgba(59,130,246,.2);
-}
-
-.form-select option{
-    color:#000;
-}
-
-.table{
-    color:#fff;
-    margin-bottom:0;
-}
-
-.table thead{
-    background:rgba(255,255,255,.08);
-}
-
-.table thead th{
-    border:none;
-    color:#fff;
-}
-
-.table td{
-    border-color:rgba(255,255,255,.08);
-    vertical-align:middle;
-}
-
-.btn-primary{
-    background:linear-gradient(135deg,#3b82f6,#2563eb);
-    border:none;
-    border-radius:14px;
-    padding:10px 20px;
-    font-weight:600;
-}
-
-.btn-success{
-    background:linear-gradient(135deg,#22c55e,#16a34a);
-    border:none;
-    border-radius:14px;
-}
-
-.btn-danger{
-    background:linear-gradient(135deg,#ef4444,#dc2626);
-    border:none;
-    border-radius:14px;
-}
-
-.btn-warning{
-    border-radius:12px;
-}
-
-canvas{
-    border-radius:18px;
-}
-
-.card h4{
+    padding:6px 12px;
+    border-radius:50px;
+    font-size:12px;
     font-weight:700;
-    margin-bottom:20px;
-}
+	}
 
-#lastUpdate{
-    color:#38bdf8;
-    font-weight:600;
-}
+	.badge-keluar{
+		background:#ef4444;
+		color:#fff;
+		padding:6px 12px;
+		border-radius:50px;
+		font-size:12px;
+		font-weight:700;
+	}
+	/* ========================================
+	TABLE
+	======================================== */
 
-::-webkit-scrollbar{
-    width:8px;
-}
+	.table{
+	color:#fff;
+	margin-bottom:0;
+	border-collapse:separate;
+	border-spacing:0 12px;
+	}
 
-::-webkit-scrollbar-thumb{
-    background:#475569;
-    border-radius:10px;
-}
+	.table thead th{
+	border:none;
+	color:#94a3b8;
+	background:transparent;
+	font-size:13px;
+	font-weight:600;
+	text-transform:uppercase;
+	letter-spacing:1px;
+	}
 
-@media (max-width: 768px){
+	.table tbody tr{
+	background:rgba(255,255,255,.06);
+	transition:.25s;
+	}
 
-.table thead{
-    display:none;
-}
+	.table tbody td{
+	border:none;
+	padding:18px 15px;
+	vertical-align:middle;
+	}
 
-.table,
-.table tbody,
-.table tr,
-.table td{
-    display:block;
-    width:100%;
-}
+	.table tbody td:first-child{
+	border-radius:16px 0 0 16px;
+	}
 
-.table tr{
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:18px;
-    margin-bottom:15px;
-    padding:10px;
-}
+	.table tbody td:last-child{
+	border-radius:0 16px 16px 0;
+	}
 
-.table td{
-    border:none;
-    padding:8px 10px;
-    text-align:right;
-    position:relative;
-    padding-left:45%;
-}
+	/* ========================================
+	CHART
+	======================================== */
 
-.table td:before{
-    position:absolute;
-    left:10px;
-    width:40%;
-    text-align:left;
-    font-weight:700;
-    color:#94a3b8;
-}
+	canvas{
+	border-radius:18px;
+	}
 
-.table td:nth-child(1):before{
+	/* ========================================
+	INFO
+	======================================== */
+
+	#lastUpdate{
+	color:#38bdf8;
+	font-weight:600;
+	}
+
+	/* ========================================
+	SCROLLBAR
+	======================================== */
+
+	::-webkit-scrollbar{
+	width:8px;
+	}
+
+	::-webkit-scrollbar-thumb{
+	background:#475569;
+	border-radius:10px;
+	}
+
+	/* ========================================
+	MOBILE
+	======================================== */
+
+	@media (max-width:768px){
+
+	.table thead{
+		display:none;
+	}
+
+	.table,
+	.table tbody,
+	.table tr,
+	.table td{
+		display:block;
+		width:100%;
+	}
+
+	.table tr{
+		padding:10px;
+		margin-bottom:15px;
+		border-radius:18px;
+		border:1px solid rgba(255,255,255,.08);
+		background:rgba(255,255,255,.06);
+	}
+
+	.table td{
+		border:none;
+		text-align:right;
+		position:relative;
+		padding:8px 10px 8px 45%;
+	}
+
+	.table td::before{
+		position:absolute;
+		left:10px;
+		width:40%;
+		text-align:left;
+		font-weight:700;
+		color:#94a3b8;
+	}
+
+	.table td:nth-child(1)::before{
     content:"Tanggal";
-}
+	}
 
-.table td:nth-child(2):before{
-    content:"Deskripsi";
-}
+	.table td:nth-child(2)::before{
+		content:"Deskripsi";
+	}
 
-.table td:nth-child(3):before{
-    content:"Tipe";
-}
+	.table td:nth-child(3)::before{
+		content:"Tipe";
+	}
 
-.table td:nth-child(4):before{
-    content:"Jumlah";
-}
+	.table td:nth-child(4)::before{
+		content:"Kategori";
+	}
 
-.table td:nth-child(5):before{
-    content:"Mata Uang";
-}
+	.table td:nth-child(5)::before{
+		content:"Jumlah";
+	}
 
-.table td:nth-child(6):before{
-    content:"Aksi";
-}
+	.table td:nth-child(6)::before{
+		content:"Mata Uang";
+	}
 
-.table td:last-child{
-    text-align:center;
-    padding-left:10px;
-}
+	.table td:nth-child(7)::before{
+		content:"Aksi";
+	}
 
-.table td:last-child button{
-    margin:3px;
-}
+	.table td:last-child{
+		text-align:center;
+		padding-left:10px;
+	}
 
-}
-@media(max-width:768px){
+	.table td:last-child button{
+		margin:3px;
+	}
 
-.btn-warning,
-.btn-danger{
-    width:48%;
-}
+	.btn-warning,
+	.btn-danger{
+		width:48%;
+	}
 
+/* ========================================
+	BADGE
+	======================================== */
+	}
+	.badge-masuk{
+		background:#22c55e;
+		color:#fff;
+		padding:6px 12px;
+		border-radius:50px;
+		font-size:12px;
+		font-weight:700;
+	}
+
+	.badge-keluar{
+		background:#ef4444;
+		color:#fff;
+		padding:6px 12px;
+		border-radius:50px;
+		font-size:12px;
+		font-weight:700;
+	}
+	
+	#inputSection,
+#transaksiSection{
+    scroll-margin-top:90px;
 }
 </style>
 </head>
 <body>
-<div class="container py-4">
-<h2>Finance Dashboard</h2>
-<button onclick="logout()" class="btn btn-danger">
-Logout
-</button>
+<nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
+
+    <div class="container-fluid">
+
+        <a class="navbar-brand fw-bold" href="#">
+            Dashboard Dompet
+        </a>
+
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarMenu">
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+        <div
+            class="collapse navbar-collapse"
+            id="navbarMenu">
+
+            <div class="ms-auto d-flex gap-2 flex-column flex-lg-row mt-3 mt-lg-0">
+
+                <button
+                    class="btn btn-primary"
+                    onclick="scrollToInput()">
+
+                    Input
+
+                </button>
+
+                <button
+                    class="btn btn-success"
+                    onclick="scrollToTransaksi()">
+
+                    Transaksi
+
+                </button>
+
+                <button
+                    class="btn btn-danger"
+                    onclick="logout()">
+
+                    Logout
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<div class="container py-2">
 <p class="text-muted">
 USD • IDR • LKR
 </p>
@@ -302,17 +525,118 @@ USD • IDR • LKR
 <button class="btn btn-success btn-sm mb-4" onclick="loadRates()">Refresh Kurs Sekarang</button>
 
 <div class="card p-4 mb-4">
-<h4>Input Transaksi</h4>
-<input type="hidden" id="editId">
-<div class="row">
-<div class="col-md-2 mb-3"><label>Tanggal</label><input type="date" id="tanggal" class="form-control"></div>
-<div class="col-md-3 mb-3"><label>Deskripsi</label><input type="text" id="deskripsi" class="form-control"></div>
-<div class="col-md-2 mb-3"><label>Jumlah</label><input type="number" id="jumlah" class="form-control"></div>
-<div class="col-md-2 mb-3"><label>Tipe</label><select id="tipe" class="form-select"><option value="MASUK">MASUK</option><option value="KELUAR">KELUAR</option></select></div>
-<div class="col-md-3 mb-3"><label>Mata Uang</label><select id="mataUang" class="form-select"><option>USD</option><option>IDR</option><option>LKR</option></select></div>
+
+    <div class="card p-4 mb-4" id="inputSection">
+
+    <h4 class="mb-4">
+        Input Transaksi
+    </h4>
+
+    <input type="hidden" id="editId">
+
+    <div class="row">
+
+        <div class="col-lg-2 col-md-6 mb-3">
+            <label class="form-label">
+                Tanggal
+            </label>
+
+            <input
+                type="date"
+                id="tanggal"
+                class="form-control">
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+            <label class="form-label">
+                Deskripsi
+            </label>
+
+            <input
+                type="text"
+                id="deskripsi"
+                class="form-control"
+                placeholder="Masukkan deskripsi">
+        </div>
+
+        <div class="col-lg-2 col-md-6 mb-3">
+            <label class="form-label">
+                Jumlah
+            </label>
+
+            <input
+                type="number"
+                id="jumlah"
+                class="form-control"
+                placeholder="0">
+        </div>
+
+        <div class="col-lg-2 col-md-6 mb-3">
+    <label class="form-label">
+        Tipe
+    </label>
+
+    <select id="tipe" class="form-select">
+        <option value="MASUK">MASUK</option>
+        <option value="KELUAR">❤KELUAR</option>
+    </select>
 </div>
-<button class="btn btn-primary" onclick="saveTransaction()">Simpan</button>
+
+<div class="col-lg-3 col-md-6 mb-3">
+    <label class="form-label">
+        Kategori
+    </label>
+
+    <select id="kategori" class="form-select">
+
+        <option value="GAJI">💰 Gaji</option>
+        <option value="BONUS">🎁 Bonus</option>
+        <option value="BISNIS">🏢 Bisnis</option>
+        <option value="INVESTASI">📈 Investasi</option>
+        <option value="TABUNGAN">🏦 Tabungan</option>
+
+        <option value="MAKAN">🍜 Makan</option>
+        <option value="BELANJA">🛒 Belanja</option>
+        <option value="TRANSPORT">🚗 Transport</option>
+        <option value="TAGIHAN">📄 Tagihan</option>
+        <option value="HIBURAN">🎮 Hiburan</option>
+        <option value="KESEHATAN">🏥 Kesehatan</option>
+
+        <option value="LAINNYA">📌 Lainnya</option>
+
+    </select>
 </div>
+
+        <div class="col-lg-3 col-md-12 mb-3">
+            <label class="form-label">
+                Mata Uang
+            </label>
+
+            <select
+                id="mataUang"
+                class="form-select">
+
+                <option>USD</option>
+                <option>IDR</option>
+                <option>LKR</option>
+
+            </select>
+        </div>
+
+    </div>
+
+    <div class="d-grid d-md-block">
+        <button
+            class="btn btn-primary px-4"
+            onclick="saveTransaction()">
+
+            💾 Simpan Transaksi
+
+        </button>
+    </div>
+
+</div>
+
 
 <div class="card p-4 mb-4">
 <h4>Ringkasan Saldo</h4>
@@ -332,7 +656,7 @@ USD • IDR • LKR
 </div>
 </div>
 
-<div class="card p-4">
+<div class="card p-4" id="transaksiSection">
 <div class="row mb-3">
 
     <div class="col-md-6">
@@ -348,20 +672,36 @@ USD • IDR • LKR
 
 </div>
 
-<h4>Daftar Transaksi</h4>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Daftar Transaksi</h4>
+
+    <span class="badge bg-primary">
+        <span id="jumlahData">0</span> Data
+    </span>
+</div>
     
 <div class="table-responsive">
 <table class="table table-bordered">
-<thead><tr><th>Tanggal</th><th>Deskripsi</th><th>Tipe</th><th>Jumlah</th><th>Mata Uang</th><th>Aksi</th></tr></thead>
+	<thead>
+	<tr>
+		<th>Tanggal</th>
+		<th>Deskripsi</th>
+		<th>Tipe</th>
+		<th>Kategori</th>
+		<th>Jumlah</th>
+		<th>Mata Uang</th>
+		<th>Aksi</th>
+	</tr>
+	</thead>
 <tbody id="tableBody"></tbody>
 </table>
  </div>
 <button class="btn btn-danger mb-3" onclick="exportPDF()">
     Export PDF
 </button>
-<br/>
+
 </div>
-<div class="card p-3 mb-4">
+<div class="card p-3 mb-5">
 
     <div class="d-flex justify-content-between align-items-center">
 
@@ -422,8 +762,9 @@ async function saveTransaction() {
     deskripsi: document.getElementById("deskripsi").value,
     jumlah: Number(document.getElementById("jumlah").value),
     tipe: document.getElementById("tipe").value,
+    kategori: document.getElementById("kategori").value,
     mata_uang: document.getElementById("mataUang").value
-  };
+};
 
   let result;
 
@@ -461,6 +802,7 @@ function editTransaction(id) {
   document.getElementById("editId").value = item.id;
   document.getElementById("tanggal").value = item.tanggal || "";
   document.getElementById("deskripsi").value = item.deskripsi || "";
+  document.getElementById("kategori").value = item.kategori || "LAINNYA";
   document.getElementById("jumlah").value = item.jumlah || "";
   document.getElementById("tipe").value = item.tipe || "MASUK";
   document.getElementById("mataUang").value = item.mata_uang || "USD";
@@ -483,38 +825,59 @@ async function deleteTransaction(id) {
 }
 
 function renderTable() {
-  const keyword = (
-    document.getElementById("searchInput")?.value || ""
-  ).toLowerCase();
 
-  const tbody = document.getElementById("tableBody");
-  tbody.innerHTML = "";
+    const keyword = (
+        document.getElementById("searchInput")?.value || ""
+    ).toLowerCase();
 
-  transactions
-    .filter(item =>
-      JSON.stringify(item).toLowerCase().includes(keyword)
-    )
-    .forEach(item => {
-      tbody.innerHTML += `
-      <tr>
-        <td>${item.tanggal || ""}</td>
-        <td>${item.deskripsi || ""}</td>
-        <td>${item.tipe}</td>
-        <td>${Number(item.jumlah || 0).toLocaleString()}</td>
-        <td>${item.mata_uang || ""}</td>
-        <td>
-          <button class="btn btn-warning btn-sm"
-            onclick="editTransaction(${item.id})">
-            Edit
-          </button>
+    const tbody = document.getElementById("tableBody");
+    tbody.innerHTML = "";
 
-          <button class="btn btn-danger btn-sm"
-            onclick="deleteTransaction(${item.id})">
-            Hapus
-          </button>
-        </td>
-      </tr>`;
+    const filtered = transactions.filter(item =>
+        JSON.stringify(item).toLowerCase().includes(keyword)
+    );
+
+    filtered.forEach(item => {
+
+        tbody.innerHTML += `
+        <tr>
+            <td>${item.tanggal || ""}</td>
+            <td>${item.deskripsi || ""}</td>
+
+            <td>
+                <span class="${
+                    item.tipe === "MASUK"
+                        ? "badge-masuk"
+                        : "badge-keluar"
+                }">
+                    ${item.tipe}
+                </span>
+            </td>
+			<td>${item.kategori || "-"}</td>
+            <td>
+                ${Number(item.jumlah || 0).toLocaleString()}
+            </td>
+			
+            <td>${item.mata_uang || ""}</td>
+			
+            <td>
+                <button
+                    class="btn btn-warning btn-sm"
+                    onclick="editTransaction(${item.id})">
+                    Edit
+                </button>
+
+                <button
+                    class="btn btn-danger btn-sm"
+                    onclick="deleteTransaction(${item.id})">
+                    Hapus
+                </button>
+            </td>
+        </tr>`;
     });
+
+    document.getElementById("jumlahData").innerText =
+        filtered.length;
 }
 
 function updateSummary() {
@@ -642,14 +1005,22 @@ async function exportPDF() {
 
   doc.autoTable({
     startY: 30,
-    head: [["Tanggal","Deskripsi","Tipe","Jumlah","Mata Uang"]],
+    head: [[
+    "Tanggal",
+    "Deskripsi",
+    "Tipe",
+    "Kategori",
+    "Jumlah",
+    "Mata Uang"
+	]],
     body: transactions.map(t => [
-      t.tanggal,
-      t.deskripsi,
-      t.tipe,
-      t.jumlah,
-      t.mata_uang
-    ])
+    t.tanggal,
+    t.deskripsi,
+    t.tipe,
+    t.kategori || "-",
+    t.jumlah,
+    t.mata_uang
+	])
   });
 
   doc.save("Laporan-Keuangan.pdf");
@@ -669,7 +1040,29 @@ setInterval(loadRates, 300000);
     window.location.href="login.html";
 
 }
+function scrollToInput() {
+    const target = document.getElementById("inputSection");
+
+    if (target) {
+        target.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }
+}
+
+function scrollToTransaksi() {
+    const target = document.getElementById("transaksiSection");
+
+    if (target) {
+        target.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }
+}
+
 </script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
