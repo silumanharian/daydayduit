@@ -122,7 +122,10 @@ if(sessionStorage.getItem("login") !== "true"){
 	font-weight:700;
 	margin-bottom:20px;
 	}
-
+	.card,
+	.card *{
+		color:#fff;
+	}
 	/* ========================================
 	CURRENCY CARD
 	======================================== */
@@ -448,7 +451,7 @@ if(sessionStorage.getItem("login") !== "true"){
 	}
 	
 	#inputSection,
-#transaksiSection{
+	#transaksiSection{
     scroll-margin-top:90px;
 }
 </style>
@@ -461,7 +464,7 @@ if(sessionStorage.getItem("login") !== "true"){
         <a class="navbar-brand fw-bold" href="#">
             Dashboard Dompet
         </a>
-
+		
         <button
             class="navbar-toggler"
             type="button"
@@ -477,8 +480,13 @@ if(sessionStorage.getItem("login") !== "true"){
             id="navbarMenu">
 
             <div class="ms-auto d-flex gap-2 flex-column flex-lg-row mt-3 mt-lg-0">
-
-                <button
+				
+				<button 
+				class="btn btn-primary" 
+				onclick="loadRates()">Refresh Kurs Sekarang
+				</button>
+                
+				<button
                     class="btn btn-primary"
                     onclick="scrollToInput()">
 
@@ -501,7 +509,7 @@ if(sessionStorage.getItem("login") !== "true"){
                     Logout
 
                 </button>
-
+				
             </div>
 
         </div>
@@ -523,6 +531,24 @@ USD • IDR • LKR
 </div>
 
 <button class="btn btn-success btn-sm mb-4" onclick="loadRates()">Refresh Kurs Sekarang</button>
+
+<div class="card p-4 mb-4">
+<h4>Ringkasan Saldo</h4>
+<div class="row">
+<div class="col-md-4"><div class="summary-box">USD: <span id="saldoUSD">$ 0</span></div></div>
+<div class="col-md-4"><div class="summary-box">IDR: <span id="saldoIDR">Rp 0</span></div></div>
+<div class="col-md-4"><div class="summary-box">LKR: <span id="saldoLKR">Rs 0</span></div></div>
+</div>
+</div>
+
+<div class="card p-4 mb-4">
+<h4>Total Semua Mata Uang (Konversi)</h4>
+<div class="row">
+<div class="col-md-4"><div class="summary-box">USD: <span id="grandUSD">$ 0</span></div></div>
+<div class="col-md-4"><div class="summary-box">IDR: <span id="grandIDR">Rp 0</span></div></div>
+<div class="col-md-4"><div class="summary-box">LKR: <span id="grandLKR">Rs 0</span></div></div>
+</div>
+</div>
 
 <div class="card p-4 mb-4">
 
@@ -637,25 +663,6 @@ USD • IDR • LKR
 
 </div>
 
-
-<div class="card p-4 mb-4">
-<h4>Ringkasan Saldo</h4>
-<div class="row">
-<div class="col-md-4"><div class="summary-box">USD: <span id="saldoUSD">$ 0</span></div></div>
-<div class="col-md-4"><div class="summary-box">IDR: <span id="saldoIDR">Rp 0</span></div></div>
-<div class="col-md-4"><div class="summary-box">LKR: <span id="saldoLKR">Rs 0</span></div></div>
-</div>
-</div>
-
-<div class="card p-4 mb-4">
-<h4>Total Semua Mata Uang (Konversi)</h4>
-<div class="row">
-<div class="col-md-4"><div class="summary-box">USD: <span id="grandUSD">$ 0</span></div></div>
-<div class="col-md-4"><div class="summary-box">IDR: <span id="grandIDR">Rp 0</span></div></div>
-<div class="col-md-4"><div class="summary-box">LKR: <span id="grandLKR">Rs 0</span></div></div>
-</div>
-</div>
-
 <div class="card p-4" id="transaksiSection">
 <div class="row mb-3">
 
@@ -701,21 +708,19 @@ USD • IDR • LKR
 </button>
 
 </div>
-<div class="card p-3 mb-5">
+<div class="card p-3 mt-4 mb-5">
 
-    <div class="d-flex justify-content-between align-items-center">
+    <div class="card p-3 mb-4">
 
-        <h6 class="mb-0">
-            📊 KELUAR MASUK
-        </h6>
+    <h6 class="mb-6">
+        📊 KELUAR MASUK
+    </h6>
 
-    </div>
-
-    <div style="height:220px">
-
+    <div style="height:330px">
         <canvas id="incomeExpenseChart"></canvas>
-
     </div>
+
+	</div>
 
 </div>
 </div>
@@ -723,7 +728,27 @@ USD • IDR • LKR
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<footer class="text-center py-4">
+    © 2026 Dayday - Nina
+    <br>
+    All Rights Reserved.
+</footer>
 <script>
+
+const jumlahInput = document.getElementById("jumlah");
+
+jumlahInput.addEventListener("input", function () {
+
+    let value = this.value.replace(/\D/g, "");
+
+    if (!value) {
+        this.value = "";
+        return;
+    }
+
+    this.value = Number(value).toLocaleString("id-ID");
+});
 const db = window.supabase.createClient(
   "https://gzjfhtmtunxjcpawoaft.supabase.co",
   "sb_publishable_qfKiFBmjU4VuC4wbd_j7sg_tRUY_9nT"
@@ -755,16 +780,36 @@ async function loadTransactions() {
 }
 
 async function saveTransaction() {
+
+  const tanggal = document.getElementById("tanggal").value;
+  const deskripsi = document.getElementById("deskripsi").value.trim();
+  const jumlah = document.getElementById("jumlah").value;
+
+  if (!tanggal) {
+    alert("Tanggal wajib diisi!");
+    return;
+  }
+
+  if (!deskripsi) {
+    alert("Deskripsi wajib diisi!");
+    return;
+  }
+
+  if (!jumlah || Number(jumlah) <= 0) {
+    alert("Jumlah harus lebih dari 0!");
+    return;
+  }
+
   const editId = document.getElementById("editId").value;
 
   const payload = {
-    tanggal: document.getElementById("tanggal").value,
-    deskripsi: document.getElementById("deskripsi").value,
-    jumlah: Number(document.getElementById("jumlah").value),
+    tanggal: tanggal,
+    deskripsi: deskripsi,
+    jumlah: Number(jumlah),
     tipe: document.getElementById("tipe").value,
     kategori: document.getElementById("kategori").value,
     mata_uang: document.getElementById("mataUang").value
-};
+  };
 
   let result;
 
@@ -783,6 +828,8 @@ async function saveTransaction() {
     alert(result.error.message);
     return;
   }
+
+  alert("✅ Transaksi berhasil disimpan!");
 
   clearForm();
   loadTransactions();
@@ -986,14 +1033,48 @@ function updateChart() {
   if (chartInstance) chartInstance.destroy();
 
   chartInstance = new Chart(canvas, {
-    type: "bar",
-    data: {
-      labels: ["MASUK", "KELUAR"],
-      datasets: [{
-        data: [income, expense]
-      }]
+  type: "bar",
+  data: {
+    labels: ["MASUK", "KELUAR"],
+    datasets: [{
+      label: "Total",
+      data: [income, expense],
+      backgroundColor: [
+        "#22c55e",
+        "#ef4444"
+      ]
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+
+    plugins: {
+      legend: {
+        display: false
+      }
+    },
+
+    scales: {
+      x: {
+        ticks: {
+          color: "#ffffff"
+        },
+        grid: {
+          color: "rgba(255,255,255,0.08)"
+        }
+      },
+      y: {
+        ticks: {
+          color: "#ffffff"
+        },
+        grid: {
+          color: "rgba(255,255,255,0.08)"
+        }
+      }
     }
-  });
+  }
+});
 }
 
 async function exportPDF() {
