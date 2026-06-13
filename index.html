@@ -37,7 +37,7 @@ if(sessionStorage.getItem("login") !== "true"){
 	}
 
 	h2{
-	font-weight:800;
+	font-weight:700;
 	color:#fff;
 	letter-spacing:.5px;
 	}
@@ -202,7 +202,15 @@ if(sessionStorage.getItem("login") !== "true"){
 	border:1px solid rgba(255,255,255,.12);
 	background:rgba(255,255,255,.08);
 	}
-
+  .currency-select{
+    width: 90px;
+    padding: 6px 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+}
 	.form-control::placeholder{
 	color:#94a3b8;
 	}
@@ -454,6 +462,44 @@ if(sessionStorage.getItem("login") !== "true"){
 	#transaksiSection{
     scroll-margin-top:90px;
 }
+/* ========================================
+	FLOATING FOTO
+	======================================== */
+#floatingPhotos{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    pointer-events:none;
+    z-index:0;
+}
+
+.float-photo{
+    position:absolute;
+    border-radius:50%;
+    object-fit:cover;
+
+    opacity:.12;
+
+    border:2px solid rgba(255,255,255,.15);
+
+    animation:floatUp linear infinite;
+}
+
+@keyframes floatUp{
+    from{
+        transform:translateY(110vh);
+    }
+    to{
+        transform:translateY(-150px);
+    }
+}
+
+.container,
+.card,
+.custom-navbar{
+    position:relative;
+    z-index:2;
+}
 </style>
 </head>
 <body>
@@ -560,96 +606,67 @@ USD • IDR • LKR
 
     <input type="hidden" id="editId">
 
-    <div class="row">
+    <div class="row align-items-end">
 
-        <div class="col-lg-2 col-md-6 mb-3">
-            <label class="form-label">
-                Tanggal
-            </label>
-
-            <input
-                type="date"
-                id="tanggal"
-                class="form-control">
-        </div>
-
-        <div class="col-lg-3 col-md-6 mb-3">
-            <label class="form-label">
-                Deskripsi
-            </label>
-
-            <input
-                type="text"
-                id="deskripsi"
-                class="form-control"
-                placeholder="Masukkan deskripsi">
-        </div>
-
-        <div class="col-lg-2 col-md-6 mb-3">
-            <label class="form-label">
-                Jumlah
-            </label>
-
-            <input
-                type="number"
-                id="jumlah"
-                class="form-control"
-                placeholder="0">
-        </div>
-
-        <div class="col-lg-2 col-md-6 mb-3">
-    <label class="form-label">
-        Tipe
-    </label>
-
-    <select id="tipe" class="form-select">
-        <option value="MASUK">MASUK</option>
-        <option value="KELUAR">❤KELUAR</option>
-    </select>
-</div>
-
-<div class="col-lg-3 col-md-6 mb-3">
-    <label class="form-label">
-        Kategori
-    </label>
-
-    <select id="kategori" class="form-select">
-
-        <option value="GAJI">💰 Gaji</option>
-        <option value="BONUS">🎁 Bonus</option>
-        <option value="BISNIS">🏢 Bisnis</option>
-        <option value="INVESTASI">📈 Investasi</option>
-        <option value="TABUNGAN">🏦 Tabungan</option>
-
-        <option value="MAKAN">🍜 Makan</option>
-        <option value="BELANJA">🛒 Belanja</option>
-        <option value="TRANSPORT">🚗 Transport</option>
-        <option value="TAGIHAN">📄 Tagihan</option>
-        <option value="HIBURAN">🎮 Hiburan</option>
-        <option value="KESEHATAN">🏥 Kesehatan</option>
-
-        <option value="LAINNYA">📌 Lainnya</option>
-
-    </select>
-</div>
-
-        <div class="col-lg-3 col-md-12 mb-3">
-            <label class="form-label">
-                Mata Uang
-            </label>
-
-            <select
-                id="mataUang"
-                class="form-select">
-
-                <option>USD</option>
-                <option>IDR</option>
-                <option>LKR</option>
-
-            </select>
-        </div>
-
+    <div class="col-lg-2 col-md-6 mb-3">
+        <label class="form-label">Tanggal</label>
+        <input type="date" id="tanggal" class="form-control">
     </div>
+
+    <div class="col-lg-3 col-md-6 mb-3">
+        <label class="form-label">Deskripsi</label>
+        <input
+            type="text"
+            id="deskripsi"
+            class="form-control"
+            placeholder="Masukkan deskripsi">
+    </div>
+
+    <div class="col-lg-2 col-md-6 mb-3">
+        <label class="form-label">Jumlah</label>
+        <input
+            type="number"
+            id="jumlah"
+            class="form-control"
+            placeholder="0">
+    </div>
+
+    <div class="col-lg-2 col-md-6 mb-3">
+        <label class="form-label">Tipe</label>
+        <select id="tipe" class="form-select">
+            <option value="MASUK">MASUK</option>
+            <option value="KELUAR">KELUAR</option>
+        </select>
+    </div>
+
+    <div class="col-lg-2 col-md-6 mb-3">
+        <label class="form-label">Kategori</label>
+        <select id="kategori" class="form-select">
+            <option value="GAJI">💰 Gaji</option>
+            <option value="BONUS">🎁 Bonus</option>
+            <option value="BISNIS">🏢 Bisnis</option>
+            <option value="INVESTASI">📈 Investasi</option>
+            <option value="TABUNGAN">🏦 Tabungan</option>
+            <option value="MAKAN">🍜 Makan</option>
+            <option value="BELANJA">🛒 Belanja</option>
+            <option value="TRANSPORT">🚗 Transport</option>
+            <option value="TAGIHAN">📄 Tagihan</option>
+            <option value="HIBURAN">🎮 Hiburan</option>
+            <option value="KESEHATAN">🏥 Kesehatan</option>
+            <option value="LAINNYA">📌 Lainnya</option>
+        </select>
+    </div>
+
+    <div class="col-lg-1 col-md-6 mb-3">
+        <label class="form-label">Mata Uang</label>
+        <select id="mataUang" class="form-select">
+            <option value="IDR">IDR</option>
+            <option value="USD">USD</option>
+            <option value="LKR">LKR</option>
+        </select>
+    </div>
+
+</div>
 
     <div class="d-grid d-md-block">
         <button
@@ -725,7 +742,7 @@ USD • IDR • LKR
 </div>
 </div>
 
-
+<div id="floatingPhotos"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -783,7 +800,10 @@ async function saveTransaction() {
 
   const tanggal = document.getElementById("tanggal").value;
   const deskripsi = document.getElementById("deskripsi").value.trim();
-  const jumlah = document.getElementById("jumlah").value;
+  const jumlah = document
+  .getElementById("jumlah")
+  .value
+  .replace(/\./g,"");
 
   if (!tanggal) {
     alert("Tanggal wajib diisi!");
@@ -1142,6 +1162,39 @@ function scrollToTransaksi() {
         });
     }
 }
+
+const photos = document.querySelectorAll(".float-photo");
+
+
+const images = [
+    "https://i.postimg.cc/Y0hCcqRY/image.png",
+    "https://i.postimg.cc/J7cqt7R9/IMG-20260329-WA0013.jpg",
+    "https://i.postimg.cc/wvNwwh8T/IMG-20260329-WA0011.jpg",
+];
+
+const container = document.getElementById("floatingPhotos");
+
+for(let i = 0; i < 15; i++){
+
+    const img = document.createElement("img");
+
+    img.src = images[Math.floor(Math.random() * images.length)];
+
+    img.className = "float-photo";
+
+    img.style.left = Math.random() * 100 + "%";
+    img.style.width = (80 + Math.random() * 60) + "px";
+    img.style.height = img.style.width;
+
+    img.style.animationDuration =
+        (20 + Math.random() * 15) + "s";
+
+    img.style.animationDelay =
+        (-Math.random() * 30) + "s";
+
+    container.appendChild(img);
+}
+
 
 </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
