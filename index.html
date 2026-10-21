@@ -622,9 +622,7 @@ USD • IDR • LKR
 
     <div class="col-lg-2 col-md-6 mb-3">
         <label class="form-label">Jumlah</label>
-        <input
-            type="number"
-            id="jumlah"
+        <input type="text" inputmode="numeric" autocomplete="off" id="jumlah"
             class="form-control"
             placeholder="0">
     </div>
@@ -753,17 +751,31 @@ USD • IDR • LKR
 
 const jumlahInput = document.getElementById("jumlah");
 
+function parseAmount(value) {
+  const digits = String(value ?? "").replace(/[^0-9]/g, "");
+  return digits ? Number(digits) : 0;
+}
+
+function formatAmount(value) {
+  return Number(value || 0).toLocaleString("id-ID");
+}
+
+// Prevent user-entered descriptions/categories from injecting HTML into the page.
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[character]);
+}
+
 jumlahInput.addEventListener("input", function () {
-
-    let value = this.value.replace(/\D/g, "");
-
-    if (!value) {
-        this.value = "";
-        return;
-    }
-
-    this.value = Number(value).toLocaleString("id-ID");
+  const value = parseAmount(this.value);
+  this.value = value ? formatAmount(value) : "";
 });
+
 const db = window.supabase.createClient(
   "https://gzjfhtmtunxjcpawoaft.supabase.co",
   "sb_publishable_qfKiFBmjU4VuC4wbd_j7sg_tRUY_9nT"
@@ -798,10 +810,7 @@ async function saveTransaction() {
 
   const tanggal = document.getElementById("tanggal").value;
   const deskripsi = document.getElementById("deskripsi").value.trim();
-  const jumlah = document
-  .getElementById("jumlah")
-  .value
-  .replace(/\./g,"");
+  const jumlah = parseAmount(document.getElementById("jumlah").value);
 
   if (!tanggal) {
     alert("Tanggal wajib diisi!");
@@ -813,7 +822,7 @@ async function saveTransaction() {
     return;
   }
 
-  if (!jumlah || Number(jumlah) <= 0) {
+  if (!Number.isFinite(jumlah) || jumlah <= 0) {
     alert("Jumlah harus lebih dari 0!");
     return;
   }
@@ -823,7 +832,7 @@ async function saveTransaction() {
   const payload = {
     tanggal: tanggal,
     deskripsi: deskripsi,
-    jumlah: Number(jumlah),
+    jumlah: jumlah,
     tipe: document.getElementById("tipe").value,
     kategori: document.getElementById("kategori").value,
     mata_uang: document.getElementById("mataUang").value
@@ -868,7 +877,7 @@ function editTransaction(id) {
   document.getElementById("tanggal").value = item.tanggal || "";
   document.getElementById("deskripsi").value = item.deskripsi || "";
   document.getElementById("kategori").value = item.kategori || "LAINNYA";
-  document.getElementById("jumlah").value = item.jumlah || "";
+  document.getElementById("jumlah").value = item.jumlah ? formatAmount(item.jumlah) : "";
   document.getElementById("tipe").value = item.tipe || "MASUK";
   document.getElementById("mataUang").value = item.mata_uang || "USD";
 }
@@ -906,8 +915,8 @@ function renderTable() {
 
         tbody.innerHTML += `
         <tr>
-            <td>${item.tanggal || ""}</td>
-            <td>${item.deskripsi || ""}</td>
+            <td>${escapeHtml(item.tanggal || "")}</td>
+            <td>${escapeHtml(item.deskripsi || "")}</td>
 
             <td>
                 <span class="${
@@ -915,15 +924,15 @@ function renderTable() {
                         ? "badge-masuk"
                         : "badge-keluar"
                 }">
-                    ${item.tipe}
+                    ${escapeHtml(item.tipe || "")}
                 </span>
             </td>
-			<td>${item.kategori || "-"}</td>
+			<td>${escapeHtml(item.kategori || "-")}</td>
             <td>
-                ${Number(item.jumlah || 0).toLocaleString()}
+                ${formatAmount(item.jumlah)}
             </td>
 			
-            <td>${item.mata_uang || ""}</td>
+            <td>${escapeHtml(item.mata_uang || "")}</td>
 			
             <td>
                 <button
@@ -962,13 +971,13 @@ function updateSummary() {
   });
 
   document.getElementById("saldoUSD").innerText =
-    "$ " + usd.toLocaleString();
+    "$ " + usd.toLocaleString("en-US");
 
   document.getElementById("saldoIDR").innerText =
-    "Rp " + idr.toLocaleString();
+    "Rp " + idr.toLocaleString("id-ID");
 
   document.getElementById("saldoLKR").innerText =
-    "Rs " + lkr.toLocaleString();
+    "Rs " + lkr.toLocaleString("en-LK");
 }
 
 function updateGrandTotal() {
@@ -995,11 +1004,11 @@ function updateGrandTotal() {
 
   document.getElementById("grandIDR").innerText =
     "Rp " +
-    Math.round(totalUSD * usdIdrRate).toLocaleString();
+    Math.round(totalUSD * usdIdrRate).toLocaleString("id-ID");
 
   document.getElementById("grandLKR").innerText =
     "Rs " +
-    Math.round(totalUSD * usdLkrRate).toLocaleString();
+    Math.round(totalUSD * usdLkrRate).toLocaleString("en-LK");
 }
 
 async function loadRates() {
@@ -1015,10 +1024,10 @@ async function loadRates() {
     idrLkrRate = usdLkrRate / usdIdrRate;
 
     document.getElementById("usdIdr").innerText =
-      usdIdrRate.toLocaleString();
+      usdIdrRate.toLocaleString("id-ID");
 
     document.getElementById("usdLkr").innerText =
-      usdLkrRate.toLocaleString();
+      usdLkrRate.toLocaleString("en-LK");
 
     document.getElementById("idrLkr").innerText =
       idrLkrRate.toFixed(4);
@@ -1030,69 +1039,74 @@ async function loadRates() {
     updateChart();
 
   } catch (e) {
-    console.error(e);
+    console.error("Gagal memuat kurs:", e);
+    document.getElementById("lastUpdate").innerText = "Gagal memuat kurs";
   }
 }
 
 function updateChart() {
-  const canvas =
-    document.getElementById("incomeExpenseChart");
+  const canvas = document.getElementById("incomeExpenseChart");
+  if (!canvas || typeof Chart === "undefined") return;
 
-  let income = 0;
-  let expense = 0;
+  // Convert all transactions to USD before comparing totals from different currencies.
+  let incomeUSD = 0;
+  let expenseUSD = 0;
 
   transactions.forEach(t => {
-    if (t.tipe === "MASUK")
-      income += Number(t.jumlah || 0);
-    else
-      expense += Number(t.jumlah || 0);
+    const amount = Number(t.jumlah || 0);
+    let amountUSD;
+
+    if (t.mata_uang === "USD") amountUSD = amount;
+    else if (t.mata_uang === "IDR" && usdIdrRate > 0) amountUSD = amount / usdIdrRate;
+    else if (t.mata_uang === "LKR" && usdLkrRate > 0) amountUSD = amount / usdLkrRate;
+    else return; // Skip conversion until the exchange rate is available.
+
+    if (t.tipe === "MASUK") incomeUSD += amountUSD;
+    else if (t.tipe === "KELUAR") expenseUSD += amountUSD;
   });
 
   if (chartInstance) chartInstance.destroy();
 
   chartInstance = new Chart(canvas, {
-  type: "bar",
-  data: {
-    labels: ["MASUK", "KELUAR"],
-    datasets: [{
-      label: "Total",
-      data: [income, expense],
-      backgroundColor: [
-        "#22c55e",
-        "#ef4444"
-      ]
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-
-    plugins: {
-      legend: {
-        display: false
-      }
+    type: "bar",
+    data: {
+      labels: ["MASUK (USD)", "KELUAR (USD)"],
+      datasets: [{
+        label: "Nilai setara USD",
+        data: [Number(incomeUSD.toFixed(2)), Number(expenseUSD.toFixed(2))],
+        backgroundColor: ["#22c55e", "#ef4444"]
+      }]
     },
-
-    scales: {
-      x: {
-        ticks: {
-          color: "#ffffff"
-        },
-        grid: {
-          color: "rgba(255,255,255,0.08)"
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: context => "$ " + Number(context.raw || 0).toLocaleString("en-US", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })
+          }
         }
       },
-      y: {
-        ticks: {
-          color: "#ffffff"
+      scales: {
+        x: {
+          ticks: { color: "#ffffff" },
+          grid: { color: "rgba(255,255,255,0.08)" }
         },
-        grid: {
-          color: "rgba(255,255,255,0.08)"
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: "#ffffff",
+            callback: value => "$ " + Number(value).toLocaleString("en-US")
+          },
+          grid: { color: "rgba(255,255,255,0.08)" }
         }
       }
     }
-  }
-});
+  });
 }
 
 async function exportPDF() {
